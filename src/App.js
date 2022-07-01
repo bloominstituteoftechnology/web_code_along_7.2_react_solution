@@ -8,10 +8,11 @@ function App() {
   const [openWeather, setOpenWeather] = useState(null);
   const [userData, setUserData] = useState({ name: "Casey Harding", age: 74, bestInstructor: true });
   const [error, setError] = useState(null);
+  const [tempType, setTempType] = useState("f");
 
   useEffect(() => {
     const func = (pos) => {
-      axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid={{insert appid here}}`)
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&appid=4ade206763c0f24a2dcbe10b1d355375`)
         .then(res => {
           const normalizedTemp = ((9/5) * (res.data.main.temp - 273) + 32).toFixed(2);
           const weather = {
@@ -24,13 +25,27 @@ function App() {
       }
       navigator.geolocation.getCurrentPosition(func)
   }, [])
+  
+  const convertC = () => {
+    const currentTemp = openWeather.cityTemp;
+    const convertTemp = (currentTemp - 32) * (5/9);
+    setOpenWeather({ ...openWeather, cityTemp: convertTemp.toFixed(2) });
+    setTempType("c");
+  }
+
+  const convertF = () => {
+    const currentTemp = openWeather.cityTemp;
+    const convertTemp = currentTemp * 1.8 + 32;
+    setOpenWeather({ ...openWeather, cityTemp: convertTemp.toFixed(2) });
+    setTempType("f")
+  }
 
   return (
     <div>
       { error ? <Error error={error} /> : 
         openWeather ? <WeatherDisplay openWeather={openWeather} userData={userData} /> : <p>Weather data coming soon!</p>
       }
-    </div>
+      <button onClick={tempType === "f" ? convertC : convertF }>Convert to: {tempType === "f" ? "Celsius" : "Farhenheit"}</button>    </div>
     )
 }
 
