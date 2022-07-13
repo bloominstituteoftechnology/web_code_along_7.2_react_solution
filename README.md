@@ -1,4 +1,4 @@
-# Code-Along 7.2 - React
+# Code-Along 7.2 - Temperature Converter
 
 ## Requirements
 
